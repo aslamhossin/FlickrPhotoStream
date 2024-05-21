@@ -1,0 +1,21 @@
+<resources>
+  <string name="app_name">AllmTest</string>
+  <string name="search">Search</string>
+  <string name="done">Done</string>
+  <string name="photos_gallery">Photos Gallery</string>
+  <string name="taken_on">Taken on: %1$s</string>
+  <string name="published">Published: %1$s</string>
+  <string name="description">Description: %1$s</string>
+  <string name="author">Author: %1$s</string>
+  <string name="back">Back</string>
+  <string name="photo_image">Photo Image</string>
+  <string name="by">By %1$s</string>
+  <string name="no_photos_available">No photos available</string>
+  
+  <string name="download_started">Download started</string>
+  <string name="download_completed">Download Successful: %1$s</string>
+  <string name="download_failed">Download Failed: %1$s</string>
+  <string name="download_in_progress">Download In Progress: %1$d%%</string>
+  <string name="file_already_exists">File already exists</string>
+  
+</resources>
