@@ -1,10 +1,9 @@
 package me.aslamhossin.flickrgallery.ui.feature.deatils
 
 import me.aslamhossin.domain.repository.file.DownloadStatus
-import me.aslamhossin.flickrgallery.ui.feature.uimodel.Photo
 
 sealed class PhotoDetailIntent {
-    data class SavePhoto(val photo: Photo) : PhotoDetailIntent()
+    data class SavePhoto(val fileName:String, val url:String) : PhotoDetailIntent()
 }
 
 sealed class PhotoDetailEffect{
