@@ -89,7 +89,7 @@ fun PhotoDetailScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(viewModel.effect) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is PhotoDetailEffect.ShowMessage -> {
@@ -136,7 +136,13 @@ fun PhotoDetailScreen(
                         IconButton(
                             onClick = {
                                 if (hasPermission || Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                    viewModel.handleIntent(PhotoDetailIntent.SavePhoto(photo))
+                                    val fileName = photo.title.ifEmpty { photo.author }
+                                    viewModel.handleIntent(
+                                        PhotoDetailIntent.SavePhoto(
+                                            fileName,
+                                            photo.media.url
+                                        )
+                                    )
                                 } else {
                                     requestPermissions.launch(permissionList.toTypedArray())
                                 }

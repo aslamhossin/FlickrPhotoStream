@@ -10,12 +10,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import me.aslamhossin.domain.repository.file.DownloadStatus
 import me.aslamhossin.domain.usecase.DownloadFileUseCase
-import me.aslamhossin.flickrgallery.ui.feature.uimodel.Photo
 import javax.inject.Inject
 
 @HiltViewModel
 class PhotoDetailViewModel @Inject constructor(
-    private val downloadFileUseCase: DownloadFileUseCase
+    private val downloadFileUseCase: DownloadFileUseCase,
 ) : ViewModel() {
 
     private val _effect = MutableSharedFlow<PhotoDetailEffect>()
@@ -25,15 +24,15 @@ class PhotoDetailViewModel @Inject constructor(
 
     fun handleIntent(intent: PhotoDetailIntent) {
         when (intent) {
-            is PhotoDetailIntent.SavePhoto -> downloadPhoto(intent.photo)
+            is PhotoDetailIntent.SavePhoto -> downloadPhoto(intent.fileName, intent.url)
         }
     }
 
-    private fun downloadPhoto(photo: Photo) = viewModelScope.launch {
-        val fileName = photo.title.ifEmpty { photo.author }
-        downloadFileUseCase(fileName, photo.media.url).collectLatest { status ->
+    private fun downloadPhoto(fileName: String, url: String) = viewModelScope.launch {
+        downloadFileUseCase(fileName, url).collectLatest { status ->
             if (status != lastDownloadStatus) {
                 _effect.emit(PhotoDetailEffect.ShowMessage(status))
+
             }
         }
     }

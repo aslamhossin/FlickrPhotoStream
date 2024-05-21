@@ -41,11 +41,17 @@ class FileManagerGateway @Inject constructor(@ApplicationContext private val con
      * @return The created File object.
      */
     fun createOutputFile(downloadDirectory: String, fileName: String): File {
-        val directory = File(context.getExternalFilesDir(downloadDirectory), "")
-        if (!directory.exists()) {
-            directory.mkdirs()
+        val directory = context.getExternalFilesDir(downloadDirectory)
+        if (directory == null) {
+            // Handle the case where the external storage is not available or the app does not have permission to access it.
+            // For example, you could create a temporary file in the app's internal storage.
+            return File(context.filesDir, fileName)
+        } else {
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+            return File(directory, fileName)
         }
-        return File(directory, fileName)
     }
 
     /**

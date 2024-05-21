@@ -58,14 +58,6 @@ class FileRepository @Inject constructor(
                 val downloadId =
                     downloadManagerGateway.enqueueDownloadRequest(fileInput.url, outputFile)
 
-                val initialOutput = FileOutput(
-                    name = fileName,
-                    outputPath = outputFile.absolutePath,
-                    fileType = fileInput.fileType,
-                    downloadInfo = DownloadInfo(id = downloadId, DownloadStatus.InProgress(0))
-                )
-                send(initialOutput)
-
                 withContext(ioDispatcher) {
                     downloadManagerGateway.monitorDownloadProgress(
                         downloadId,

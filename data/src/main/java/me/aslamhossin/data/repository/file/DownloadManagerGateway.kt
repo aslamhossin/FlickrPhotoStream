@@ -52,10 +52,12 @@ class DownloadManagerGateway @Inject constructor(
     fun monitorDownloadProgress(downloadId: Long, file: File): Flow<DownloadStatus> = flow {
         try {
             while (true) {
-                val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                val downloadManager =
+                    context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                 val progress = getDownloadProgress(downloadManager, downloadId)
-                emit(DownloadStatus.InProgress(progress))
-                if (progress >= 100) {
+                if (progress < 100) {
+                    emit(DownloadStatus.InProgress(progress))
+                } else {
                     emit(DownloadStatus.Completed(file.absolutePath))
                     break
                 }
@@ -77,8 +79,10 @@ class DownloadManagerGateway @Inject constructor(
         val query = DownloadManager.Query().setFilterById(downloadId)
         val cursor: Cursor = downloadManager.query(query)
         return if (cursor.moveToFirst()) {
-            val totalSize = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
-            val downloadedSize = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+            val totalSize =
+                cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+            val downloadedSize =
+                cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
             cursor.close()
             if (totalSize > 0) {
                 (downloadedSize * 100L / totalSize).toInt()
