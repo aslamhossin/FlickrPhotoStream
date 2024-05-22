@@ -1,9 +1,7 @@
 package me.aslamhossin.flickrgallery.ui.feature.deatils
 
-import android.content.pm.PackageManager
-import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -38,7 +36,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.flow.collectLatest
@@ -46,6 +43,8 @@ import kotlinx.coroutines.launch
 import me.aslamhossin.flickrgallery.R
 import me.aslamhossin.flickrgallery.ui.feature.deatils.components.PhotoContent
 import me.aslamhossin.flickrgallery.ui.feature.uimodel.Photo
+import me.aslamhossin.flickrgallery.ui.util.permission.PermissionManager
+import me.aslamhossin.flickrgallery.ui.util.permission.PermissionType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,36 +56,28 @@ fun PhotoDetailScreen(
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    var hasPermission by remember { mutableStateOf(false) }
+    var hasPermissions by remember { mutableStateOf(false) }
 
-    val requestPermissions =
-        rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
-            hasPermission = results.all { it.value }
+    val requestPermissionsLauncher =
+        rememberLauncherForActivityResult(RequestMultiplePermissions()) { results ->
+            val permissionsAreGranted = results.values.all { it }
+            hasPermissions = permissionsAreGranted
+            if (permissionsAreGranted.not()) {
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar("Enable Storage permission to download image")
+                }
+            }
         }
 
-    val permissionList = mutableListOf<String>()
-    when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
-            // No need to request WRITE_EXTERNAL_STORAGE for Android 10 and above for using MediaStore
-        }
+    val permissions = PermissionManager.requestPermissionList(
+        listOf(
+            PermissionType.Storage,
+            PermissionType.Notifications
+        )
+    )
 
-        else -> {
-            permissionList.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        }
-    }
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        permissionList.add(android.Manifest.permission.POST_NOTIFICATIONS)
-    }
-
-    LaunchedEffect(key1 = true) {
-
-        hasPermission = permissionList.all { permission ->
-            ContextCompat.checkSelfPermission(
-                context,
-                permission
-            ) == PackageManager.PERMISSION_GRANTED
-        }
+    LaunchedEffect(true) {
+        hasPermissions = PermissionManager.checkPermissions(context, permissions)
     }
 
     LaunchedEffect(viewModel.effect) {
@@ -135,7 +126,7 @@ fun PhotoDetailScreen(
                     actions = {
                         IconButton(
                             onClick = {
-                                if (hasPermission || Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                if (hasPermissions) {
                                     val fileName = photo.title.ifEmpty { photo.author }
                                     viewModel.handleIntent(
                                         PhotoDetailIntent.SavePhoto(
@@ -144,7 +135,7 @@ fun PhotoDetailScreen(
                                         )
                                     )
                                 } else {
-                                    requestPermissions.launch(permissionList.toTypedArray())
+                                    requestPermissionsLauncher.launch(permissions)
                                 }
                             }
                         ) {
