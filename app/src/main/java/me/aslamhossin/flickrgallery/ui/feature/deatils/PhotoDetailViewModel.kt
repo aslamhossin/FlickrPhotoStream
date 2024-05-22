@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PhotoDetailViewModel @Inject constructor(
-    private val downloadFileUseCase: DownloadFileUseCase,
+    private val downloadFileUseCase: DownloadFileUseCase
 ) : ViewModel() {
 
     private val _effect = MutableSharedFlow<PhotoDetailEffect>()
