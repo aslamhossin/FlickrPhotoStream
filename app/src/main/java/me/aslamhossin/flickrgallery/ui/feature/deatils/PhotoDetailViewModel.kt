@@ -6,7 +6,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import me.aslamhossin.domain.repository.file.DownloadStatus
 import me.aslamhossin.domain.usecase.DownloadFileUseCase
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PhotoDetailViewModel @Inject constructor(
-    private val downloadFileUseCase: DownloadFileUseCase
+    private val downloadFileUseCase: DownloadFileUseCase,
 ) : ViewModel() {
 
     private val _effect = MutableSharedFlow<PhotoDetailEffect>()
@@ -29,12 +30,14 @@ class PhotoDetailViewModel @Inject constructor(
     }
 
     private fun downloadPhoto(fileName: String, url: String) = viewModelScope.launch {
-        downloadFileUseCase(fileName, url).collectLatest { status ->
+
+        downloadFileUseCase(fileName, url).onEach { status ->
             if (status != lastDownloadStatus) {
                 _effect.emit(PhotoDetailEffect.ShowMessage(status))
 
             }
-        }
+        }.launchIn(viewModelScope)
+
     }
 
 }
