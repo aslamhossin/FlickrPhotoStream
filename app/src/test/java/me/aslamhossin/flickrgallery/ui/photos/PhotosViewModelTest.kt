@@ -70,7 +70,7 @@ class PhotosViewModelTest {
     }
 
     @Test
-    fun `initial state is correct`() = runTest {
+    fun `initial state should return when init block executes`() = runTest {
         val expectedState = PhotosViewState(
             isLoading = false,
             photos = null,
@@ -84,7 +84,7 @@ class PhotosViewModelTest {
     }
 
     @Test
-    fun `fetchPhotos() updates state success`() = runTest(UnconfinedTestDispatcher()) {
+    fun `success state should return when getPhotoUseCase returns photos`() = runTest(UnconfinedTestDispatcher()) {
         `when`(getPhotoUseCase()).thenReturn(testPhotoItems)
 
         viewModel.state.test {
@@ -100,7 +100,7 @@ class PhotosViewModelTest {
     }
 
     @Test
-    fun `fetchPhotos() updates state failure`() = runTest(UnconfinedTestDispatcher()) {
+    fun `failure state should return when getPhotoUseCase throws an exception`() = runTest(UnconfinedTestDispatcher()) {
         val exception = RuntimeException("Unknown error")
         `when`(getPhotoUseCase()).thenThrow(exception)
 
@@ -116,7 +116,7 @@ class PhotosViewModelTest {
     }
 
     @Test
-    fun `searchPhotos() with matching query filters photos`() =
+    fun `filtered photos should return when searchPhotos is called with valid query`() =
         runTest(UnconfinedTestDispatcher()) {
             setPrivateField(viewModel, "cachedPhotos", testPhotos)
             `when`(getPhotoUseCase()).thenReturn(testPhotoItems)
@@ -137,7 +137,7 @@ class PhotosViewModelTest {
         }
 
     @Test
-    fun `searchPhotos() with blank query resets photos`() = runTest(UnconfinedTestDispatcher()) {
+    fun `cached photos should be returned when searchPhotos is called with empty query`() = runTest(UnconfinedTestDispatcher()) {
         setPrivateField(viewModel, "cachedPhotos", testPhotos)
         `when`(getPhotoUseCase()).thenReturn(testPhotoItems)
 
@@ -153,7 +153,7 @@ class PhotosViewModelTest {
     }
 
     @Test
-    fun `searchPhotos with non-matching query returns empty list`() =
+    fun `emptyList should be returned when searchPhotos is called with non-existent query`() =
         runTest(UnconfinedTestDispatcher()) {
             setPrivateField(viewModel, "cachedPhotos", testPhotos)
             `when`(getPhotoUseCase()).thenReturn(testPhotoItems)

@@ -126,7 +126,7 @@ fun PhotoDetailScreen(
                     actions = {
                         IconButton(
                             onClick = {
-                                if (hasPermissions) {
+                                if (hasPermissions.not()) {
                                     val fileName = photo.title.ifEmpty { photo.author }
                                     viewModel.handleIntent(
                                         PhotoDetailIntent.SavePhoto(
