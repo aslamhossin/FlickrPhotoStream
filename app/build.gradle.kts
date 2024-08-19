@@ -74,9 +74,14 @@ android {
         }
     }
 
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
+    testOptions.unitTests {
+        isIncludeAndroidResources = true
+        all { tests ->
+            tests.useJUnitPlatform()
+            tests.testLogging {
+                events("passed", "skipped", "failed")
+            }
+
         }
     }
 }
@@ -137,6 +142,8 @@ dependencies {
     testImplementation(libs.mockito.inline)
     testImplementation(libs.turbine)
     testImplementation(libs.truth)
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.ui.test.junit4)
