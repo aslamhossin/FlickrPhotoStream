@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import me.aslamhossin.flickrgallery.ui.navigation.ScreenNavHost
-import me.aslamhossin.flickrgallery.ui.theme.AllmTestTheme
+import me.aslamhossin.flickrgallery.ui.theme.GalleryAppTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
-            AllmTestTheme {
+            GalleryAppTheme {
                 ScreenNavHost(rememberNavController())
             }
         }

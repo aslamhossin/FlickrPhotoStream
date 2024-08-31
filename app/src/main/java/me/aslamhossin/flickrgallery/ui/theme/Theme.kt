@@ -71,7 +71,7 @@ val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun AllmTestTheme(
+fun GalleryAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
