@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import me.aslamhossin.flickrgallery.R
 import me.aslamhossin.flickrgallery.ui.feature.uimodel.Media
 import me.aslamhossin.flickrgallery.ui.feature.uimodel.Photo
-import me.aslamhossin.flickrgallery.ui.theme.AllmTestTheme
+import me.aslamhossin.flickrgallery.ui.theme.GalleryAppTheme
 import me.aslamhossin.flickrgallery.ui.util.coil.CoilImage
 
 @Composable
@@ -81,7 +81,7 @@ fun PhotoItem(
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
 fun PhotoItemPreview() {
-    AllmTestTheme {
+    GalleryAppTheme {
         PhotoItem(
             modifier = Modifier.padding(8.dp),
             Photo(
