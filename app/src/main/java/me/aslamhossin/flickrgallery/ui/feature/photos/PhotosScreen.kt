@@ -27,8 +27,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import me.aslamhossin.core.error.displayableMessage
 import me.aslamhossin.flickrgallery.R
-import me.aslamhossin.flickrgallery.ui.feature.deatils.photos.component.SearchAppBar
 import me.aslamhossin.flickrgallery.ui.feature.photos.component.PhotoItem
+import me.aslamhossin.flickrgallery.ui.feature.photos.component.SearchAppBar
 import me.aslamhossin.flickrgallery.ui.feature.uimodel.Photo
 import me.aslamhossin.flickrgallery.ui.navigation.ARG_PHOTO
 import me.aslamhossin.flickrgallery.ui.navigation.SCREEN_PHOTO_DETAIL
